@@ -1,108 +1,79 @@
-# 💊 SystPharma – Plateforme de gestion de pharmacie
+# 💊 SystPharma – Plateforme de gestion de pharmacie avec Spring Boot
 
-**SystPharma** est une application Java orientée objet conçue pour faciliter la gestion d’une pharmacie moderne.
-Elle offre une interface pour les **Clients**, les **Agents de pharmacie** et les **Administrateurs**, leur permettant d'interagir avec les fonctionnalités essentielles de gestion des médicaments, des commandes, des paniers, des assurances et des statistiques.
+**SystPharma** est une application Java orientée objet, modernisée avec **Spring Boot**, conçue pour faciliter la gestion d’une pharmacie.
+Elle offre une interface console pour les **Clients**, et pose les bases pour les **Agents de pharmacie** et les **Administrateurs**, leur permettant d'interagir avec les fonctionnalités de gestion des médicaments, des commandes, etc.
 
 ---
 
-## 🚀 Fonctionnalités Clés (Version Actuelle - Console)
+## 🚀 Fonctionnalités Clés (Version Actuelle - Console avec Spring Boot)
 
 ### 👥 Gestion des Acteurs
-- **Client** : S'enregistre, se connecte, recherche des médicaments, gère son panier, passe des commandes et effectue des paiements.
-- **Agent de pharmacie** : Gère les médicaments (CRUD), les catégories, les assurances (CRUD) et les commandes des clients.
-- **Administrateur** : Supervise l'ensemble des utilisateurs, des pharmacies (si applicable), et accède aux statistiques globales.
+- **Client** : S'enregistre, se connecte. (Recherche médicaments, panier, commandes sont des fonctionnalités en développement ou futures).
+- **Agent de pharmacie** : (Fonctionnalités futures : Gère les médicaments, assurances, commandes).
+- **Administrateur** : (Fonctionnalités futures : Supervise, accède aux statistiques).
 
 ### 🔐 Authentification & Compte
-- Connexion / Déconnexion sécurisée.
-- Création de compte client.
-- Mise à jour des informations de compte (fonctionnalité future ou partielle).
-- Système de rôles intégré : `Role.ADMINISTRATEUR`, `Role.CLIENT`, `Role.AGENT` (ou noms exacts de votre enum `Role`).
-- Gestion du statut des comptes : `StatutCompte.ACTIF`, `StatutCompte.INACTIF`, `StatutCompte.DESACTIVE` (ou noms exacts de votre enum `StatutCompte`).
+- Connexion / Déconnexion (logique de base implémentée).
+- Création de compte client avec validations.
+- Système de rôles (`Role.CLIENT`, etc.) et statut de compte (`StatutCompte.ACTIF`, etc.) via le modèle de domaine.
 
-### 🧪 Gestion des Médicaments, Catégories & Assurances
-- **Recherche de médicaments avancée** : Par nom. (Futures améliorations : par catégorie, dans une pharmacie spécifique).
-- **Opérations CRUD sur les médicaments** : Ajout, modification, suppression (typiquement pour les agents/admins).
-- Gestion des catégories de médicaments (CRUD si entité distincte).
-- Recherche d'assurance par nom.
-- **Opérations CRUD sur les assurances** (si implémenté).
-
-### 🛒 Panier & Commande
-- Gestion flexible du panier : Ajout, suppression d'articles, modification des quantités, vidage du panier.
-- Calcul automatique du montant total.
-- Passage de commande (potentiellement associée à une pharmacie si cette entité existe).
-- Options de paiement diversifiées (ex: `ESPECE`, `MOMO`).
-
-### 📊 Statistiques & Rapports (Fonctionnalités futures ou conceptuelles pour la version console)
-- Calcul du chiffre d’affaires sur une période donnée.
-- Suivi du nombre de clients.
-- Identification des médicaments les plus commandés.
-- Vue sur le nombre total de produits vendus.
+### 🧪 Gestion des Médicaments & Autres (Bases pour développement futur)
+- L'infrastructure DAO/Service est en place pour étendre ces fonctionnalités.
 
 ---
 
 ## 🛠️ Architecture & Bonnes Pratiques
 
-Ce projet adhère à des principes de conception robustes et des pratiques de développement modernes :
+Ce projet intègre **Spring Boot** et adhère à des principes de conception robustes :
 
--   ✅ **Architecture multicouche** : Organisation claire en couches distinctes (`domaine`, `dao`, `service`, `presentation`) pour une meilleure modularité et maintenabilité.
--   ✅ **Sécurité des requêtes SQL** : Utilisation systématique de `PreparedStatement` pour prévenir les injections SQL.
--   ✅ **Gestion de la connexion JDBC** : Obtention centralisée de la connexion via `ConnexionDB` et gestion des ressources JDBC avec `try-with-resources` dans les DAOs. `AbstractDAO` fournit des méthodes utilitaires pour exécuter les requêtes.
--   ✅ **Configuration externalisée** : Paramètres de connexion à la base de données gérés via des fichiers `.properties` (avec filtrage Maven pour les profils d'environnement).
--   ✅ **Journalisation (Logging)** : Implémentation d'un système de logging avec `Log4j` pour un suivi détaillé des opérations et des anomalies.
--   ✅ **Gestion personnalisée des exceptions** : Hiérarchie d'exceptions (`DatabaseException`, `BusinessException`) pour une gestion d'erreurs claire et spécifique.
--   ✅ **Programmation fonctionnelle Java 8+** : Utilisation de Stream API et d'Expressions Lambda (par exemple, pour les `RowMapper` dans les DAOs).
--   ✅ **Tests Unitaires** : Implémentation de tests unitaires avec JUnit 5 et Mockito pour la couche service, favorisant la robustesse et la maintenabilité du code.
--   ✅ **Automatisation du build** : Utilisation de **Apache Maven** pour la gestion des dépendances, la compilation, les tests et le packaging du projet.
+-   ✅ **Architecture multicouche** : Organisation claire en couches (`domaine`, `dao`, `service`, `presentation`).
+-   ✅ **Spring Boot** : Utilisation pour la gestion des dépendances, l'auto-configuration, la gestion des beans (IoC/DI) et le serveur embarqué (si application web future).
+-   ✅ **Sécurité des requêtes SQL** : Utilisation systématique de `PreparedStatement` (via la logique de `AbstractDAO`).
+-   ✅ **Gestion de la connexion JDBC via Spring Boot** : Le `DataSource` est configuré par Spring Boot (`application.properties`) et injecté dans les DAOs.
+-   ✅ **Configuration externalisée** : Paramètres de connexion à la base de données gérés via `application.properties` (standard Spring Boot) et potentiellement des profils Spring. L'ancien système de filtrage Maven pour `db.properties` est moins central avec Spring Boot pour la configuration du DataSource principal.
+-   ✅ **Journalisation (Logging) avec SLF4J & Logback** : Configuration de logging standardisée via Spring Boot (Logback par défaut).
+-   ✅ **Gestion personnalisée des exceptions** : Hiérarchie d'exceptions (`DatabaseException`, `BusinessException`).
+-   ✅ **Programmation fonctionnelle Java 8+** : Utilisation de Stream API et d'Expressions Lambda.
+-   ✅ **Tests Unitaires** : Implémentation de tests unitaires avec JUnit 5 et Mockito pour la couche service.
+-   ✅ **Automatisation du build** : Utilisation de **Apache Maven** pour la gestion du projet.
 
 ---
 
 ## 📦 Modèle Métier (Entités Principales)
 
+*(Cette section reste globalement la même, assurez-vous qu'elle reflète bien votre module `tp-domaine`)*
 | Entité             | Attributs clés (non exhaustif) | Relations importantes (exemples) |
 |--------------------|--------------------------------|-----------------------------------|
 | **Client** (hérite de `Utilisateur`) | `id`, `email` (unique), `password`, `compte` (contenant `role`, `statut`) | - Passe des `Commandes`, possède un `Panier` |
-| **Agent Pharmacie** (hérite de `Utilisateur`) | `id`, `matricule`, `email`, `password`, `compte` | - Gère `Médicaments`, `Assurances` |
-| **Administrateur** (hérite de `Utilisateur`) | `id`, `email`, `password`, `compte` | - Supervise le système |
-| **Pharmacie** (si modélisée) | `id`, `nom`, `adresse` | - Possède un `Stock`, gère des `Assurances` |
-| **Médicament** | `id` (PK auto-générée), `designation`, `prix`, `description`, `image` | - Appartient à une `Categorie`, est dans `Stock` et `ArticlePanier` |
-| **Categorie** | `id` (PK), `designation` (unique) | - Regroupe des `Médicaments` |
-| **Assurance** (si modélisée) | `id` (PK), `nom`, `taux_couverture` | - Peut être appliquée aux `Commandes` |
-| **Panier** | `id` (PK), `etat` | - Associé à un `Client`, contient des `ArticlePanier` |
-| **Article Panier** | `id` (PK), `quantite` | - Référence un `Medicament`, appartient à un `Panier` |
-| **Commande** | `id` (PK), `numero`, `date`, `statut`, `montant_total` | - Associée à `Client`, `Pharmacie` (optionnel), `Panier` (source), `Paiement` |
-| **Paiement** | `id` (PK), `montant`, `mode_paiement`, `date_paiement` | - Associé à une `Commande` |
+| ... (autres entités) ... | ... | ... |
 | **Compte** (dans `Utilisateur`) | `email` (identifiant), `password`, `role`, `statut` | - Associé à un `Utilisateur` |
 
 ---
 
 ## 📊 Diagrammes
 
-### 🧰 Diagramme de Cas d'Utilisation (Use Case Diagram)
+*(Assurez-vous que les chemins sont corrects et que les images sont pertinentes pour la version actuelle)*
+### 🧰 Diagramme de Cas d'Utilisation
 ![Diagramme de Cas d'Utilisation](tp-presentation/src/main/resources/img/UseCaseDiagV9Sido.PNG)
 
 ### 📘 Diagrammes de Classes
-**Diagramme de Classes principal :**
 ![Diagramme de Classes Principal](tp-presentation/src/main/resources/img/ClassDiagramV10.jpg)
-
-**Diagramme de Classes avec services :**
 ![Diagramme de Classes avec Services](tp-presentation/src/main/resources/img/ClassDiagramServiceV10.jpg)
-
-
-
 
 ---
 
 ## ⚙️ Technologies & Outils
 
--   **Langage** : Java 17 (ou la version que vous utilisez)
--   **Base de données** : MySQL (version à spécifier si pertinent)
--   **Connectivité BD** : JDBC (Java Database Connectivity)
+-   **Langage** : Java 17
+-   **Framework Principal** : Spring Boot 3.2.x
+-   **Base de données** : MySQL
+-   **Connectivité BD** : JDBC, Spring Boot JDBC (`DataSource`)
 -   **Framework de Build** : Apache Maven
--   **Tests Unitaires** : JUnit 5, Mockito
--   **Conception d'Architecture** : Multicouche, Pattern DAO (Data Access Object) et Service.
--   **Configuration** : Fichiers `.properties` avec filtrage Maven pour profils d'environnement.
--   **Journalisation** : Log4j 1.2.17
--   **IDE** : IntelliJ IDEA (ou autre)
+-   **Tests Unitaires** : JUnit 5, Mockito, Spring Test
+-   **Conception d'Architecture** : Multicouche, Pattern DAO et Service, IoC/DI avec Spring.
+-   **Configuration** : `application.properties` (Spring Boot).
+-   **Journalisation** : SLF4J avec Logback (via Spring Boot).
+-   **IDE** : IntelliJ IDEA
 -   **Contrôle de Version** : Git / GitHub
 
 ---
@@ -111,81 +82,79 @@ Ce projet adhère à des principes de conception robustes et des pratiques de d�
 
 | Tâche                                      | Statut | Description                                                                  |
 | :----------------------------------------- | :----- | :--------------------------------------------------------------------------- |
-| Architecture en couches (Domaine, DAO, Service, Présentation) | ✅      | Implémentation complète.                                                    |
-| Connexion JDBC & Gestion des ressources    | ✅      | Centralisée via `ConnexionDB` et `AbstractDAO` avec `try-with-resources`.    |
-| Services métier dédiés                     | ✅      | Logique métier encapsulée.                                                  |
-| DAO avec interfaces et implémentations     | ✅      | Accès aux données structuré.                                                 |
+| Architecture en couches                    | ✅      | Maintenue et adaptée pour Spring.                                           |
+| Intégration Spring Boot (Core, DI, IoC)    | ✅      | Gestion des beans DAO/Service par Spring.                                     |
+| Configuration DataSource via Spring Boot   | ✅      | Connexion DB gérée via `application.properties`.                             |
+| Journalisation SLF4J/Logback               | ✅      | Migration depuis Log4j 1.x.                                                  |
+| Services métier (ex: ServiceClient)        | ✅      | Logique métier de base avec validations.                                    |
+| DAO avec AbstractDAO et JDBC               | ✅      | Accès aux données utilisant le DataSource injecté par Spring.                |
 | Gestion d’erreurs personnalisée            | ✅      | Exceptions `DatabaseException` et `BusinessException`.                      |
-| Journalisation Log4j                       | ✅      | Intégration pour traçage et débogage.                                       |
-| Utilisation de Java 8+ (Lambda/Stream)     | ✅      | Code modernisé (ex: `RowMapper`).                                            |
-| Tests Unitaires (Couche Service)           | ✅      | Implémentation avec JUnit 5 & Mockito.                                       |
-| Interface Console (CLI)                    | ✅      | Interface utilisateur fonctionnelle pour les opérations de base.              |
-| Maven (Build, Dépendances, Profils)        | ✅      | Gestion complète du projet.                                                 |
-| Interface Graphique (Swing/JavaFX) ou Web  | ⏳      | Développement futur envisagé.                                                |
-| Intégration Spring Framework               | ⏳      | Prochaine étape envisagée pour la gestion des beans et DI.                   |
+| Tests Unitaires (Couche Service)           | ✅      | Tests pour `ServiceClient` avec JUnit 5 & Mockito.                           |
+| Interface Console (CLI) via Spring Boot    | ✅      | Point d'entrée `CommandLineRunner` fonctionnel.                              |
+| Maven (Build, Dépendances)                 | ✅      | Adapté pour Spring Boot.                                                    |
+| Interface Graphique ou Web                 | ⏳      | Développement futur.                                                         |
 
 ---
 
 ## 📂 Fichiers Clés du Projet
 
--   `pom.xml` (à la racine) : Fichier principal de configuration Maven (POM parent).
--   `tp-domaine/`, `tp-dao/`, `tp-service/`, `tp-presentation/` : Modules Maven du projet.
--   `tp-dao/src/main/resources/db.properties` : Fichier modèle pour la configuration de la base de données (avec placeholders).
--   `tp-dao/src/main/resources/filters/dev.properties` : Fichier de filtre pour l'environnement de développement (contient les identifiants BD sensibles - **doit être dans `.gitignore`**).
--   `tp-presentation/src/main/java/com/sido/syspharma/presentation/Main.java` : Point d'entrée de l'application console.
--   `logs/syspharma.log` (généré à l'exécution, chemin configurable via `log4j.properties`) : Fichier de journalisation.
+-   `pom.xml` (à la racine) : Fichier POM parent configuré pour Spring Boot.
+-   `tp-presentation/src/main/java/com/sido/syspharma/presentation/SysPharmaSpringApplication.java` : Point d'entrée principal de l'application Spring Boot.
+-   `tp-presentation/src/main/resources/application.properties` : Fichier de configuration principal de Spring Boot (incluant la configuration du DataSource).
+-   Optionnel: `tp-presentation/src/main/resources/logback-spring.xml` : Pour une configuration avancée de Logback.
+-   Anciens fichiers de configuration (pour référence ou si encore utilisés partiellement) :
+    -   `tp-dao/src/main/resources/db.properties` (template)
+    -   `tp-dao/src/main/resources/filters/dev.properties` (valeurs locales, **dans `.gitignore`**)
 
 ---
 
 ## 🔐 Sécurité & Bonnes Pratiques
 
--   **Protection contre les injections SQL** : Utilisation systématique de `PreparedStatement`.
--   **Externalisation des configurations sensibles** : Identifiants de base de données dans des fichiers de propriétés filtrés et ignorés par Git.
--   **Traçabilité des anomalies** : Logging robuste avec Log4j.
--   **Code Source Propre** : Absence d'informations confidentielles codées en dur.
+-   **Protection contre les injections SQL** : `PreparedStatement` via `AbstractDAO`.
+-   **Externalisation des configurations sensibles** : Identifiants de base de données dans `application.properties`, qui peut être géré par des profils Spring ou des variables d'environnement en production (ne pas commiter les identifiants de production).
+-   **Traçabilité des anomalies** : Logging avec SLF4J/Logback.
 
 ---
 
 ### Étapes d'exécution
 
 1.  **Prérequis :**
-    *   Java JDK 17 (ou la version spécifiée dans `pom.xml`) installé et configuré.
-    *   Apache Maven installé et configuré.
-    *   Serveur MySQL accessible et en cours d'exécution.
-    *   Créez manuellement la base de données : `CREATE DATABASE syspharma_dev CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;` (ou le nom que vous utilisez).
+    *   Java JDK 17 (ou configuré dans `pom.xml`).
+    *   Apache Maven.
+    *   Serveur MySQL accessible.
+    *   Base de données créée : `CREATE DATABASE syspharma_dev CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
+    *   (Optionnel) Les tables `client`, `medicament` etc. sont créées par l'application au démarrage via `TableCreator` si vous avez gardé cette logique appelée depuis `SysPharmaSpringApplication`.
 
 2.  **Clonez le dépôt du projet :**
     ```bash
     git clone [URL_DU_VOTRE_DEPOT_GITHUB]
     cd SysPharmaMaven
     ```
-    *(Remplacez `[URL_DU_VOTRE_DEPOT_GITHUB]` par l'URL réelle de votre dépôt)*
 
 3.  **Configurez les identifiants de la base de données :**
-    *   Créez ou ouvrez le fichier `tp-dao/src/main/resources/filters/dev.properties`.
-    *   Assurez-vous qu'il contienne :
+    *   Ouvrez le fichier `tp-presentation/src/main/resources/application.properties`.
+    *   Mettez à jour les valeurs `spring.datasource.username` et `spring.datasource.password` avec vos identifiants MySQL.
         ```properties
-        db.url=jdbc:mysql://localhost:3306/syspharma_dev # Adaptez si nécessaire
-        db.username=votre_utilisateur_mysql
-        db.password=votre_mot_de_passe_mysql
+        spring.datasource.url=jdbc:mysql://localhost:3306/syspharma_dev?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+        spring.datasource.username=votre_utilisateur_mysql
+        spring.datasource.password=votre_mot_de_passe_mysql
         ```
-    *   **Attention** : Ce fichier `dev.properties` doit être listé dans votre `.gitignore` pour ne pas commiter vos identifiants.
+    *   Ce fichier `application.properties` peut être adapté pour différents environnements en utilisant les profils Spring (`application-dev.properties`, `application-prod.properties`). Le fichier de base ne devrait pas contenir d'identifiants de production s'il est versionné.
 
 4.  **Construisez le projet avec Maven :**
     À la racine du projet (`SysPharmaMaven`), exécutez :
     ```bash
-    mvn clean install -Pdev
+    mvn clean install
     ```
-    *(L'option `-Pdev` active le profil de développement, qui utilise `dev.properties` pour le filtrage des ressources.)*
+    *(L'activation du profil `-Pdev` n'est plus nécessaire pour la configuration du DataSource si elle est gérée par `application.properties` directement, à moins que vous l'utilisiez pour d'autres filtrages).*
 
-5.  **Exécutez l'application console :**
-    Depuis la racine du projet (`SysPharmaMaven`) :
-    ```bash
-    mvn exec:java -pl tp-presentation
-    ```
-    *(Cette commande exécute la classe `com.sido.syspharma.presentation.Main`.)*
-
-    *(Note : La création d'un JAR exécutable "fat" avec toutes les dépendances n'est pas configurée par défaut dans ce projet. L'exécution se fait via Maven pour simplifier.)*
+5.  **Exécutez l'application Spring Boot :**
+    *   **Depuis l'IDE :** Exécutez la méthode `main` de `SysPharmaSpringApplication.java`.
+    *   **Depuis la ligne de commande (après `mvn clean install`) :**
+        ```bash
+        java -jar tp-presentation/target/tp-presentation-1.0-SNAPSHOT.jar
+        ```
+        *(Vérifiez le nom exact du JAR généré dans le répertoire `tp-presentation/target/`)*
 
 ---
 
@@ -198,10 +167,10 @@ Les contributions sont les bienvenues ! Veuillez ouvrir une `Issue` pour discute
 
 ## 👩‍💻 Auteur
 
-Projet réalisé dans le cadre d'un TP Java chez Obis partenaire de 10000codeurs 
-
-**Période :** Février 2024 – Juin 2025 
-Dernière mise à jour : 05 Juin 2025 
+Projet réalisé dans le cadre d'un TP Java chez Objis partenaire de 10000codeurs
+Par Sidonie DJUISSI FOHOUO
+**Période :** Février 2024 – Juin 2025
+Dernière mise à jour : 06 Juin 2025
 
 -   **LinkedIn** : [www.linkedin.com/in/sidonie-djuissi-fohouo](https://www.linkedin.com/in/sidonie-djuissi-fohouo)
 -   **Email** : sidoniedjuissifohouo@gmail.com

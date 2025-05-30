@@ -4,7 +4,8 @@ import com.sido.syspharma.domaine.enums.StatutCompte;
 import com.sido.syspharma.domaine.model.Compte;
 import com.sido.syspharma.domaine.model.Utilisateur;
 import com.sido.syspharma.service.interfaces.IServiceCompte;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class ServiceCompte implements IServiceCompte {
 
-    private static final Logger logger = Logger.getLogger(ServiceCompte.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServiceCompte.class);
 
     /**
      * Modifie le statut d’un compte utilisateur.
