@@ -80,19 +80,19 @@ Les principales entités modélisées dans ce projet sont :
 
 ### 🧰 Diagramme de Cas d'Utilisation (Use Case Diagram)
 
-![use case diagram](src/com/sido/syspharma/presentation/img/UseCaseDiagV9Sido.PNG)
+![use case diagram](tp-presentation/src/main/resources/img/UseCaseDiagV9Sido.PNG)
 
 ### 📘 Diagrammes de Classes
 
 **Diagramme de Classes principal :**
-![class diagram](src/com/sido/syspharma/presentation/img/ClassDiagramV10.jpg)
+![class diagram](tp-presentation/src/main/resources/img/ClassDiagramV10.jpg)
 
 **Diagramme de Classes avec découpage moderne (incluant les classes de service) :**
-![class diagram](src/com/sido/syspharma/presentation/img/ClassDiagramServiceV10.jpg)
+![class diagram](tp-presentation/src/main/resources/img/ClassDiagramServiceV10.jpg)
 
 ### 📁 Structure du Projet
 
-![Structure du projet](src/com/sido/syspharma/presentation/img/StructureProjet.PNG)
+![Structure du projet]([img](tp-presentation/src/main/resources/img/StructureProjet.PNG)
 
 ---
 
