@@ -145,6 +145,44 @@ Les principales entités modélisées dans ce projet sont :
 -   **Absence d'informations sensibles en dur** : Aucune information confidentielle n'est codée en dur dans le code source de l'application.
 
 ---
+### Étapes d'exécution
+
+1.  **Clonez le dépôt du projet :**
+    ```bash
+    git clone [URL_DU_VOTRE_DEPOT_GITHUB]
+    cd SysPharmaMaven
+    ```
+    *(Remplacez `[URL_DU_VOTRE_DEPOT_GITHUB]` par l'URL réelle de votre dépôt)*
+
+2.  **Configurez les identifiants de la base de données :**
+* Ouvrez le fichier `tp-dao/src/main/resources/filters/dev.properties`.
+* Mettez à jour les valeurs `db.url`, `db.username` et `db.password` avec vos identifiants MySQL.
+* **Attention** : Ce fichier contient des informations sensibles et est configuré pour être ignoré par Git (`.gitignore`). Ne le commettez pas directement sur votre dépôt public.
+
+3.  **Construisez le projet avec Maven :**
+    Naviguez vers la racine du projet (`SysPharmaMaven`) dans votre terminal et exécutez la commande suivante. Cela compilera tous les modules, exécutera les tests et générera les JARs, en appliquant le profil de développement.
+    ```bash
+    mvn clean install -Pdev
+    ```
+
+4.  **Exécutez l'application console :**
+    Une fois le build terminé avec succès, vous pouvez lancer l'application en utilisant le plugin Maven `exec:java`. Assurez-vous d'être à la racine du projet (`SysPharmaMaven`).
+    ```bash
+    mvn exec:java -pl tp-presentation
+    ```
+    *(Cette commande exécutera la classe `com.sido.syspharma.presentation.Main` du module `tp-presentation`, en gérant automatiquement le classpath de toutes les dépendances.)*
+
+    **Alternative (exécution d'un JAR exécutable) :**
+    Si vous avez configuré le `maven-jar-plugin` ou `maven-assembly-plugin` dans `tp-presentation/pom.xml` pour créer un JAR exécutable autonome (un "fat JAR"), vous pouvez l'exécuter comme suit :
+    ```bash
+    java -jar tp-presentation/target/tp-presentation-1.0-SNAPSHOT.jar
+    # Ou si vous avez configuré un fat JAR avec dépendances :
+    # java -jar tp-presentation/target/tp-presentation-1.0-SNAPSHOT-jar-with-dependencies.jar
+    ```
+    *(Veuillez noter que le nom du JAR dépend de votre configuration de packaging.)*
+
+---
+
 
 ## 🤝 Contributions
 
