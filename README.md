@@ -59,19 +59,19 @@ Ce projet adhère à des principes de conception robustes et des pratiques de d�
 Les principales entités modélisées dans ce projet sont :
 
 | Entité             | Attributs clés | Relations importantes |
-|--------------------|----------------|-----------------------|
-| **Client** | `id`, `nom`, `prenom`, `email` (unique), `password`, `role`, `statut` | - Passe des `Commandes` |
-| **Agent Pharmacie**| `id`, `nom`, `prenom`, `matricule`, `email`, `password`, `role`, `statut` | - Gère `Médicaments`, `Assurances` |
-| **Administrateur** | `id`, `nom`, `prenom`, `email`, `password`, `role`, `statut` | - Supervise tous les acteurs |
-| **Pharmacie** | `id`, `désignation`, `email`, `adresse`, `téléphone`, `directeur`, `horaires` | - Possède un `Stock`, gère des `Assurances` |
-| **Médicament** | `id`, `désignation`, `prix`, `description`, `catégorie` | - Est contenu dans `Stock` et `Article Panier` |
-| **Générique** | `id`, `désignation`, `prix`, `description` | - Version générique d'un `Médicament` original |
-| **Catégorie** | `id`, `désignation` | - Regroupe les `Médicaments` |
-| **Assurance** | `id`, `numéro unique`, `désignation`, `description` | - Appliquée aux `Commandes` |
-| **Panier** | `id`, `état` (`EN_COURS`, `VALIDE`, `VIDE`), `client` | - Contient des `Article Panier` |
-| **Article Panier** | `id`, `quantité`, `prix_unitaire` | - Référence un `Médicament` et un `Panier` |
-| **Commande** | `id`, `numéro`, `date`, `statut`, `montant` | - Associée à un `Client`, une `Pharmacie`, un `Panier` et un `Paiement` |
-| **Paiement** | `id`, `montant`, `mode_de_paiement`, `date` | - Associé à une `Commande` |
+|--------------------|--------------|-----------------------|
+| **Client** | `nom`, `prenom`, `email` (unique), `password`, `role`, `statut` | - Passe des `Commandes` |
+| **Agent Pharmacie**| `nom`, `prenom`, `matricule`, `email`, `password`, `role`, `statut` | - Gère `Médicaments`, `Assurances` |
+| **Administrateur** | `nom`, `prenom`, `email`, `password`, `role`, `statut` | - Supervise tous les acteurs |
+| **Pharmacie** | `désignation`, `email`, `adresse`, `téléphone`, `directeur`, `horaires` | - Possède un `Stock`, gère des `Assurances` |
+| **Médicament** |`désignation`, `prix`, `description`, `catégorie` | - Est contenu dans `Stock` et `Article Panier` |
+| **Générique** |`désignation`, `prix`, `description` | - Version générique d'un `Médicament` original |
+| **Catégorie** |`désignation` | - Regroupe les `Médicaments` |
+| **Assurance** |`numéro unique`, `désignation`, `description` | - Appliquée aux `Commandes` |
+| **Panier** |`état` (`EN_COURS`, `VALIDE`, `VIDE`), `client` | - Contient des `Article Panier` |
+| **Article Panier** |`quantité`, `prix_unitaire` | - Référence un `Médicament` et un `Panier` |
+| **Commande** |`numéro`, `date`, `statut`, `montant` | - Associée à un `Client`, une `Pharmacie`, un `Panier` et un `Paiement` |
+| **Paiement** |`montant`, `mode_de_paiement`, `date` | - Associé à une `Commande` |
 | **Statistique** | (Entité conceptuelle) | - Représente des agrégats pour les rapports |
 
 ---
