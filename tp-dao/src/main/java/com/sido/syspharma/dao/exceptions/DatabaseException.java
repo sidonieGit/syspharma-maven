@@ -1,4 +1,4 @@
-package com.sido.syspharma.exceptions;
+package com.sido.syspharma.dao.exceptions;
 
 /**
  * Exception personnalisée pour signaler les erreurs d’accès BD.

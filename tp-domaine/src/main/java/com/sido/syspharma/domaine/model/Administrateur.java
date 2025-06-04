@@ -2,6 +2,7 @@ package com.sido.syspharma.domaine.model;
 
 import com.sido.syspharma.domaine.enums.Role;
 
+
 /**
  * Représente un administrateur ayant un rôle global sur la plateforme.
  */

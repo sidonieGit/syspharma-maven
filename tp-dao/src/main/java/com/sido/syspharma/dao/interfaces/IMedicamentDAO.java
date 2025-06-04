@@ -1,7 +1,7 @@
 package com.sido.syspharma.dao.interfaces;
 
 import com.sido.syspharma.domaine.model.Medicament;
-import com.sido.syspharma.exceptions.DatabaseException;
+import com.sido.syspharma.dao.exceptions.DatabaseException;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.sido.syspharma.dao.interfaces;
 
 import com.sido.syspharma.domaine.model.Compte;
-import com.sido.syspharma.exceptions.DatabaseException;
+import com.sido.syspharma.dao.exceptions.DatabaseException;
 
 public interface ICompteDAO {
 
