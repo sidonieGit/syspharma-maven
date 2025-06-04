@@ -7,91 +7,27 @@
     <groupId>com.sido.syspharma</groupId>
     <artifactId>syspharma-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <packaging>pom</packaging> <!-- Important pour un POM parent -->
 
     <name>SysPharma Maven Parent</name>
-    <description>Parent POM for the SysPharma application modules.</description>
+    <description>Parent POM for the SysPharma multi-module project.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <junit.version>5.11.0</junit.version>
+        <maven.compiler.source>17</maven.compiler.source> <!-- Ou votre version Java -->
+        <maven.compiler.target>17</maven.compiler.target> <!-- Ou votre version Java -->
+        <!-- Versions des dépendances de test -->
+        <junit.jupiter.version>5.10.2</junit.jupiter.version>
+        <mockito.version>5.11.0</mockito.version>
+        <!-- Version du plugin Surefire (pour exécuter les tests) -->
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+        <!-- Autres versions (par exemple, log4j, mysql-connector-j) -->
         <log4j.version>1.2.17</log4j.version>
-        <mysql.connector.version>9.3.0</mysql.connector.version>
-        <hibernate.version>6.4.4.Final</hibernate.version>
+        <mysql.connector.version>8.0.33</mysql.connector.version> <!-- Ou la version que vous utilisez -->
         <jakarta.persistence.version>3.1.0</jakarta.persistence.version>
+        <hibernate.version>6.4.4.Final</hibernate.version> <!-- Ou une autre version stable récente de Hibernate 6 -->
+        <!-- Ajoutez d'autres versions de dépendances communes ici -->
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junit.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>${log4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.mysql</groupId>
-                <artifactId>mysql-connector-j</artifactId>
-                <version>${mysql.connector.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate.orm</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>jakarta.persistence</groupId>
-                <artifactId>jakarta.persistence-api</artifactId>
-                <version>${jakarta.persistence.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.13.0</version>
-                    <configuration>
-                        <release>${maven.compiler.target}</release>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.3.0</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.4.2</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.4.0</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.3.1</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-install-plugin</artifactId>
-                    <version>3.1.2</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.1.2</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
 
     <modules>
         <module>tp-domaine</module>
@@ -99,4 +35,148 @@
         <module>tp-service</module>
         <module>tp-presentation</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Dépendances de votre application -->
+            <dependency>
+                <groupId>com.sido.syspharma</groupId>
+                <artifactId>tp-domaine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sido.syspharma</groupId>
+                <artifactId>tp-dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sido.syspharma</groupId>
+                <artifactId>tp-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sido.syspharma</groupId>
+                <artifactId>tp-presentation</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- Dépendances externes communes -->
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>${mysql.connector.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.persistence</groupId>
+                <artifactId>jakarta.persistence-api</artifactId>
+                <version>${jakarta.persistence.version}</version>
+            </dependency>
+            <!-- Ajoutez d'autres dépendances communes ici (ex: Hibernate si utilisé directement) -->
+            <dependency>
+                <groupId>org.hibernate.orm</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+                <!-- Le type 'jar' est implicite et correct ici, pas besoin de <type>pom</type> -->
+            </dependency>
+
+            <!-- DÉPENDANCES DE TEST UNITAIRE (JUnit 5 & Mockito) -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-params</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Dépendances communes à TOUS les modules (à utiliser avec parcimonie) -->
+    <!-- Il est souvent préférable de les déclarer dans dependencyManagement et de les ajouter
+         explicitement dans les modules enfants qui en ont besoin, sauf si c'est VRAIMENT commun. -->
+    <!--
+    <dependencies>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <scope>compile</scope> <!- Ou runtime ->
+        </dependency>
+    </dependencies>
+    -->
+
+    <build>
+        <pluginManagement> <!-- Gestion centralisée des versions et configurations des plugins -->
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version> <!-- Ou une version récente -->
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                    <!-- Pas besoin de configuration spécifique pour JUnit 5 si les conventions sont respectées -->
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.5.1</version>
+                </plugin>
+                <!-- Ajoutez ici d'autres plugins communs que vous voulez gérer centralement -->
+            </plugins>
+        </pluginManagement>
+
+        <!-- Plugins qui s'appliquent à tous les modules (rarement nécessaire dans le parent pour l'exécution) -->
+        <!-- Sauf si vous voulez forcer une configuration par défaut pour tous -->
+        <plugins>
+            <plugin> <!-- S'assure que le compilateur est configuré pour tous les modules -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!-- La configuration sera héritée de pluginManagement -->
+            </plugin>
+            <plugin> <!-- S'assure que surefire est disponible pour tous les modules pour exécuter les tests -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <!-- La configuration sera héritée de pluginManagement -->
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

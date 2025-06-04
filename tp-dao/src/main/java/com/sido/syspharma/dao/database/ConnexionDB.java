@@ -1,6 +1,6 @@
 package com.sido.syspharma.dao.database;
 
-import com.sido.syspharma.exceptions.DatabaseException; // Assurez-vous d'utiliser le bon package pour DatabaseException
+import com.sido.syspharma.dao.exceptions.DatabaseException; // Assurez-vous d'utiliser le bon package pour DatabaseException
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;

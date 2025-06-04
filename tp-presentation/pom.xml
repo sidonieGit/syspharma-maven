@@ -32,7 +32,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.sido.syspharma.presentation.Main</mainClass>
+                            <mainClass>com.sido.syspharma.service.presentation.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -41,8 +41,9 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
+                <version>3.2.0</version> <!-- Ou une autre version stable récente -->
                 <configuration>
-                    <mainClass>com.sido.syspharma.presentation.Main</mainClass>
+                    <mainClass>com.sido.syspharma.service.presentation.Main</mainClass>
                     <classpathScope>runtime</classpathScope>
                 </configuration>
             </plugin>

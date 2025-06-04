@@ -1,8 +1,9 @@
-package com.sido.syspharma.service.compte;
+package com.sido.syspharma.service;
 
 import com.sido.syspharma.domaine.enums.StatutCompte;
 import com.sido.syspharma.domaine.model.Compte;
 import com.sido.syspharma.domaine.model.Utilisateur;
+import com.sido.syspharma.service.interfaces.IServiceCompte;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * Service pour la gestion des comptes utilisateurs.
  */
-public class ServiceCompte implements com.sido.syspharma.service.interfaces.IServiceCompte {
+public class ServiceCompte implements IServiceCompte {
 
     private static final Logger logger = Logger.getLogger(ServiceCompte.class);
 
