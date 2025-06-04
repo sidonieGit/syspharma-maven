@@ -2,6 +2,7 @@ package com.sido.syspharma.service;
 
 import com.sido.syspharma.domaine.model.Assurance;
 import com.sido.syspharma.domaine.model.Pharmacie;
+import com.sido.syspharma.service.interfaces.IserviceAssurance;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * Service métier lié à la gestion des assurances.
  */
 
-public class serviceAssurance implements com.sido.syspharma.service.interfaces.IserviceAssurance {
+public class serviceAssurance implements IserviceAssurance {
     // 🔍 Rechercher une assurance dans une pharmacie par son nom
     @Override
     public Assurance rechercherAssuranceParNomEtPharmacie(String nomAssurance, Pharmacie pharmacie) {

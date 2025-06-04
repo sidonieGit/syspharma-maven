@@ -2,6 +2,7 @@ package com.sido.syspharma.presentation;
 
 import com.sido.syspharma.dao.database.TableCreator;
 import com.sido.syspharma.dao.impl.ClientDAOImpl;
+import com.sido.syspharma.dao.exceptions.DatabaseException;
 import com.sido.syspharma.domaine.model.Client;
 import com.sido.syspharma.domaine.enums.Role; // Ajoutez cet import si ce n'est pas déjà fait
 import com.sido.syspharma.domaine.exceptions.BusinessException;
@@ -22,7 +23,7 @@ public class Main {
             TableCreator.createTableClientIfNotExists();
             TableCreator.createTableMedicamentIfNotExists(); // Et les autres tables si besoin
             logger.info("Vérification/Création des tables terminée.");
-        } catch (com.sido.syspharma.exceptions.DatabaseException e) {
+        } catch (DatabaseException e) {
             logger.fatal("Échec de l'initialisation des tables de la base de données : " + e.getMessage(), e);
             System.err.println("ERREUR CRITIQUE : Impossible d'initialiser la base de données. L'application va s'arrêter.");
             return; // Arrêter l'application si les tables ne peuvent pas être créées

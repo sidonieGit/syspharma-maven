@@ -1,14 +1,13 @@
 package com.sido.syspharma.domaine.model;
 
 import com.sido.syspharma.domaine.enums.Role;
-
-import jakarta.persistence.AssociationOverride;
 // Plus d'import de com.sido.syspharma.dao.interfaces.IConnexion;
 
 /**
  * Classe de base abstraite pour les utilisateurs du système.
  */
 public abstract class Utilisateur { // N'implémente plus IConnexion
+    protected Long id; // AJOUT : Champ pour l'identifiant
     protected String nom;
     protected String prenom;
     protected String email;
@@ -28,6 +27,7 @@ public abstract class Utilisateur { // N'implémente plus IConnexion
     }
 
     // Getters
+    public Long getId() { return id; } // AJOUT : Getter pour l'ID
     public String getNom() { return nom; }
     public String getPrenom() { return prenom; }
     public String getEmail() { return email; }
@@ -37,13 +37,16 @@ public abstract class Utilisateur { // N'implémente plus IConnexion
     public Compte getCompte() { return compte; }
 
     // Setters
+    public void setId(Long id) { this.id = id; } // AJOUT : Setter pour l'ID
     public void setNom(String nom) { this.nom = nom; }
     public void setPrenom(String prenom) { this.prenom = prenom; }
     public void setEmail(String email) { this.email = email; }
     public void setAdresse(String adresse) { this.adresse = adresse; }
     public void setTelephone(String telephone) { this.telephone = telephone; }
     public void setPassword(String password) { this.password = password; } // À protéger ou retirer
+
     public void setCompte(Compte compte) { this.compte = compte; }
+
 
 
 

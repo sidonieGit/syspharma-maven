@@ -26,5 +26,32 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
+        <!-- Dépendances de test pour CE module -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <!-- La version et le scope 'test' sont hérités du pom.xml parent -->
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <!-- Nécessaire pour l'exécution des tests par Surefire/IDE -->
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <!-- Pour l'intégration de Mockito avec le cycle de vie de JUnit 5 (@ExtendWith(MockitoExtension.class)) -->
+        </dependency>
+        <!-- Si vous utilisez @ParameterizedTest, ajoutez aussi : -->
+        <!--
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+        </dependency>
+        -->
     </dependencies>
 </project>

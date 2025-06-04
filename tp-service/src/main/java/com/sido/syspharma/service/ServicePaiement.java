@@ -4,11 +4,12 @@ import com.sido.syspharma.domaine.commande.Commande;
 import com.sido.syspharma.domaine.commande.Paiement;
 import com.sido.syspharma.domaine.enums.ModePaiement;
 import com.sido.syspharma.domaine.enums.StatutCommande;
+import com.sido.syspharma.service.interfaces.IServicePaiement;
 
 /**
  * Service dédié à la gestion des paiements.
  */
-public class ServicePaiement implements com.sido.syspharma.service.interfaces.IServicePaiement {
+public class ServicePaiement implements IServicePaiement {
 
     /**
      * Effectue un paiement sur une commande donnée.
