@@ -10,11 +10,11 @@ com\sido\syspharma\service\interfaces\IServiceClient.class
 com\sido\syspharma\service\serviceAssurance.class
 com\sido\syspharma\service\ServiceCommande.class
 com\sido\syspharma\service\AuthServiceImpl.class
-com\sido\syspharma\service\compte\ServiceCompte.class
 com\sido\syspharma\service\ServiceMedicament.class
 com\sido\syspharma\service\ServiceClient.class
 com\sido\syspharma\service\interfaces\IAuthService.class
 com\sido\syspharma\service\ServicePharmacie.class
+com\sido\syspharma\service\ServiceCompte.class
 com\sido\syspharma\service\ServiceAgentPharmacie.class
 com\sido\syspharma\service\interfaces\IserviceAssurance.class
 com\sido\syspharma\service\interfaces\IServicePanier.class

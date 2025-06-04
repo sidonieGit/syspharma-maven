@@ -3,7 +3,7 @@ package com.sido.syspharma.service;
 import com.sido.syspharma.dao.interfaces.IClientDAO;
 import com.sido.syspharma.domaine.model.Client;
 import com.sido.syspharma.domaine.exceptions.BusinessException;
-import com.sido.syspharma.exceptions.DatabaseException;
+import com.sido.syspharma.dao.exceptions.DatabaseException;
 import com.sido.syspharma.service.interfaces.IServiceClient;
 import org.apache.log4j.Logger;
 

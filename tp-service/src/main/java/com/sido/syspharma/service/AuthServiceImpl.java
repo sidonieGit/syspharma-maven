@@ -5,7 +5,7 @@ import com.sido.syspharma.dao.interfaces.ICompteDAO; // Vous aurez probablement 
 import com.sido.syspharma.domaine.model.Compte;
 import com.sido.syspharma.domaine.model.Utilisateur;
 import com.sido.syspharma.domaine.exceptions.BusinessException;
-import com.sido.syspharma.exceptions.DatabaseException; // Pour capturer et re-lever
+import com.sido.syspharma.dao.exceptions.DatabaseException; // Pour capturer et re-lever
 
 public class AuthServiceImpl implements IAuthService {
 

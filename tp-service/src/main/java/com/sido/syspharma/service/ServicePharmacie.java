@@ -2,12 +2,13 @@ package com.sido.syspharma.service;
 
 import com.sido.syspharma.domaine.model.Medicament;
 import com.sido.syspharma.domaine.model.Pharmacie;
+import com.sido.syspharma.service.interfaces.IServicePharmacie;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ServicePharmacie implements com.sido.syspharma.service.interfaces.IServicePharmacie {
+public class ServicePharmacie implements IServicePharmacie {
 
     private List<Pharmacie> pharmacies = new ArrayList<>();
 

@@ -4,12 +4,12 @@ import com.sido.syspharma.domaine.commande.ArticlePanier;
 import com.sido.syspharma.domaine.commande.Commande;
 import com.sido.syspharma.domaine.model.Medicament;
 import com.sido.syspharma.domaine.model.Statistique;
+import com.sido.syspharma.service.interfaces.IServiceStatistique;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class ServiceStatistique implements com.sido.syspharma.service.interfaces.IServiceStatistique {
+public class ServiceStatistique implements IServiceStatistique {
 
     @Override
     public Statistique calculerStatistiques(List<Commande> commandes, LocalDate debut, LocalDate fin) {

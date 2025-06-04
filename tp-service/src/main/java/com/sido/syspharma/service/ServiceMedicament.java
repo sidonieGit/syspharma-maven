@@ -3,15 +3,15 @@ package com.sido.syspharma.service;
 import com.sido.syspharma.domaine.model.Medicament;
 import com.sido.syspharma.domaine.model.Pharmacie;
 import com.sido.syspharma.domaine.exceptions.BusinessException;
+import com.sido.syspharma.service.interfaces.IServiceMedicament;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
  * Service de gestion des médicaments (CRUD + recherche).
  */
-public class ServiceMedicament implements com.sido.syspharma.service.interfaces.IServiceMedicament {
+public class ServiceMedicament implements IServiceMedicament {
 
     @Override
     public void ajouterMedicament(Pharmacie pharmacie, Medicament medicament) {

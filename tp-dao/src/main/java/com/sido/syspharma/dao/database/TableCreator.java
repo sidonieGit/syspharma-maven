@@ -1,6 +1,6 @@
 package com.sido.syspharma.dao.database;
 
-import com.sido.syspharma.exceptions.DatabaseException;
+import com.sido.syspharma.dao.exceptions.DatabaseException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;

@@ -2,10 +2,10 @@ package com.sido.syspharma.service;
 
 import com.sido.syspharma.domaine.commande.Commande;
 import com.sido.syspharma.domaine.enums.StatutCommande;
-import com.sido.syspharma.domaine.model.Assurance;
 import com.sido.syspharma.domaine.model.Client;
 import com.sido.syspharma.domaine.model.Medicament;
 import com.sido.syspharma.domaine.model.Pharmacie;
+import com.sido.syspharma.service.interfaces.IServiceAgentPharmacie;
 
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Service lié aux actions de l’agent de pharmacie : gestion des stocks et assurances.
  */
-public class ServiceAgentPharmacie implements com.sido.syspharma.service.interfaces.IServiceAgentPharmacie {
+public class ServiceAgentPharmacie implements IServiceAgentPharmacie {
 
     // ---------- Gestion des médicaments ----------
 
