@@ -90,18 +90,24 @@ public abstract class AbstractDAO {
     protected <R> Optional<R> executeQueryForSingleResult(String sql, StatementOperation paramsSetter, RowMapper<R> rowMapper) throws DatabaseException {
         try (Connection connection = ConnexionDB.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
-            paramsSetter.apply(stmt); // Définir les paramètres
+            paramsSetter.apply(stmt); // Définir les paramètres- Appliquer les paramètres à la requête (ex: stmt.setString(1, email)).
             try (ResultSet rs = stmt.executeQuery()) {
+                // Si le ResultSet contient au moins une ligne...
                 if (rs.next()) {
+                    // ...mapper cette ligne en un objet R en utilisant le rowMapper fourni,
+                    // et l'encapsuler dans un Optional.
                     return Optional.of(rowMapper.mapRow(rs));
                 } else {
+                    // Si aucune ligne n'est retournée, retourner un Optional vide.
                     return Optional.empty();
                 }
             }
-        } catch (SQLException e) {
+        } catch (SQLException e) { // Attrape les erreurs SQL (problème de syntaxe, contrainte violée, etc.)
             logger.error("Erreur SQL lors de l'exécution de la requête (single result): " + sql, e);
+            // Encapsule la SQLException dans une DatabaseException personnalisée pour la couche service.
             throw new DatabaseException("Erreur lors de l'exécution de la requête: " + e.getMessage(), e);
-        }
+        }  // Les ressources (Connection, PreparedStatement, ResultSet pour generatedKeys) sont automatiquement fermées ici.
+
     }
 
     /**
@@ -131,15 +137,18 @@ public abstract class AbstractDAO {
             logger.error("Erreur SQL lors de l'exécution de la requête (list result): " + sql, e);
             throw new DatabaseException("Erreur lors de l'exécution de la requête: " + e.getMessage(), e);
         }
-        return results;
+        return results;// Retourner la liste (potentiellement vide).
     }
 
     /**
      * Interface fonctionnelle pour mapper une ligne d'un ResultSet à un objet.
+     * * C'est une stratégie de mapping qui sera fournie par les classes DAO concrètes.
      * @param <T> Le type de l'objet à mapper.
      */
     @FunctionalInterface
     protected interface RowMapper<T> {
+        // La seule méthode à implémenter : prend un ResultSet (positionné sur une ligne)
+        // et retourne un objet de type T mappé à partir de cette ligne.
         T mapRow(ResultSet rs) throws SQLException;
     }
 
