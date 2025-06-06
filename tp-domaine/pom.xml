@@ -11,7 +11,20 @@
     <artifactId>tp-domaine</artifactId>
     <packaging>jar</packaging>
     <name>SysPharma Domaine Module</name>
+    <description>Domain Model for SysPharma application.</description>
+
     <dependencies>
+        <!-- jakarta.persistence-api si vous utilisez les annotations JPA (ex: @Entity)
+             dans vos classes du domaine. La version est gérée par la section <dependencyManagement> du parent. -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+        </dependency>
+
+        <!-- Les dépendances de test (JUnit 5, Mockito) sont généralement apportées
+             par 'spring-boot-starter-test' dans d'autres modules (DAO, Service, Presentation).
+             Si vous aviez des tests UNITAIRES purs dans ce module (sans Spring Boot),
+             vous pourriez ajouter explicitement :
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -22,9 +35,6 @@
             <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-        </dependency>
+        -->
     </dependencies>
 </project>
