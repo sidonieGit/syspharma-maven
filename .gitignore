@@ -1,70 +1,156 @@
-# Fichiers et répertoires compilés par Maven et les IDEs
-target/
-out/
-bin/
+# Fichier .gitignore pour le projet SysPharmaMaven
 
-# Fichiers spécifiques aux IDEs
-.idea/
-*.iml
-*.ipr
-*.iws
-.classpath
-.project
-.settings/
-nbproject/
-*.nbattrs
-.vscode/
-.fleet/
+# ==============================================================================
+# FICHIERS ET RÉPERTOIRES GÉNÉRÉS PAR LE BUILD ET LES OUTILS
+# ==============================================================================
 
-# Fichiers spécifiques aux OS
-.DS_Store
-Thumbs.db
-ehthumbs.db
-ehthumbs_vista.db
+# Répertoire de build Maven par défaut pour tous les modules
+**/target/
 
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-hs_err_pid*
+# Répertoires de sortie de compilation courants pour certains IDEs
+**/out/
+**/bin/
 
-# Fichiers temporaires Maven et de build
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-.gradletasknamecache
-*.retry
-
-# Fichiers de configuration locaux/sensibles
-# Le fichier template (ex: db.properties avec des placeholders) DOIT être versionné.
-# Les fichiers de filtres contenant les vraies valeurs NE DOIVENT PAS être versionnés.
-/tp-dao/src/main/resources/filters/dev.properties
-/tp-dao/src/main/resources/filters/prod.properties
-/tp-dao/src/main/resources/filters/test.properties
-# Ajoutez d'autres fichiers de filtres spécifiques si vous en avez, par exemple:
-# src/main/resources/filters/*.properties
-# **/src/main/resources/filters/*.secret
-
-# Archives (si vous les générez localement et ne voulez pas les versionner par erreur)
-*.jar
+# Archives générées (sauf si vous voulez explicitement versionner un JAR/WAR spécifique)
+# Le JAR exécutable de Spring Boot (dans target/) est déjà couvert par **/target/
+# *.jar
 *.war
 *.ear
 *.zip
 *.tar.gz
 *.rar
 
-# Rapports de tests et de couverture (si générés localement et non désirés dans le repo)
-# /target/surefire-reports/ # Déjà couvert par target/
-# /target/failsafe-reports/ # Déjà couvert par target/
-# /target/site/jacoco/ # Déjà couvert par target/
+# ==============================================================================
+# FICHIERS SPÉCIFIQUES AUX IDEs ET AUX ÉDITEURS
+# ==============================================================================
 
-# Fichiers de cache divers
-.cache
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+# Fichiers de modules IntelliJ (si stockés au niveau du projet)
+# *.xml # Trop générique, pourrait exclure des fichiers importants. Soyez spécifique si besoin.
+
+# Eclipse
+.classpath
+.project
+.settings/
+.apt_generated/
+.factorypath
+.springBeans
+.sts4-cache/
+
+# NetBeans
+nbproject/
+*.nbattrs
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# VS Code
+.vscode/
+
+# Fleet (JetBrains)
+.fleet/
+
+# Fichiers de cache et temporaires d'éditeurs
 *.swp
 *~
+# Fichiers de sauvegarde Emacs
+*#
+.#*
+
+# ==============================================================================
+# FICHIERS SPÉCIFIQUES AUX SYSTÈMES D'EXPLOITATION
+# ==============================================================================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+
+# ==============================================================================
+# LOGS ET RAPPORTS
+# ==============================================================================
+
+# Répertoires de logs
+logs/
+**/logs/ # Pour les logs dans les sous-modules
+
+# Fichiers de logs
+*.log
+*.log.*.gz # Logs archivés et compressés
+
+# Logs spécifiques à Node.js (si jamais utilisé dans le projet)
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Fichiers de dump de la JVM en cas de crash
+hs_err_pid*
+replay_pid*
+
+# Rapports de tests (déjà dans target/, mais par précaution si générés ailleurs)
+# **/surefire-reports/
+# **/failsafe-reports/
+
+# ==============================================================================
+# FICHIERS TEMPORAIRES ET DE CONFIGURATION MAVEN
+# ==============================================================================
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties # Fichier de timing de build Maven
+.gradletasknamecache # Si Gradle est utilisé par erreur
+
+# Fichiers de "retry" de certains outils
+*.retry
+
+# ==============================================================================
+# FICHIERS DE CONFIGURATION CONTENANT DES INFORMATIONS SENSIBLES
+# (MOTS DE PASSE, CLÉS API, ETC.)
+# ==============================================================================
+
+# IMPORTANT :
+# Les fichiers de configuration TEMPLATE (avec des placeholders) DOIVENT être versionnés.
+# Les fichiers contenant les VRAIES VALEURS SENSIBLES NE DOIVENT PAS être versionnés.
+
+# Ancien système de filtrage Maven (si encore utilisé pour des configurations locales non-DB) :
+# Ignorez les fichiers de propriétés spécifiques à l'environnement dans les dossiers 'filters'.
+# Exemple pour le module tp-dao :
+/tp-dao/src/main/resources/filters/dev.properties
+/tp-dao/src/main/resources/filters/prod.properties
+/tp-dao/src/main/resources/filters/test.properties
+# Vous pouvez généraliser si vous avez la même structure dans d'autres modules :
+# **/src/main/resources/filters/*.properties
+
+# Fichiers de configuration Spring Boot spécifiques à l'environnement et contenant des secrets :
+# Le fichier application.properties de base (SANS secrets) EST généralement versionné.
+# Les fichiers de profil qui surchargent avec des secrets sont ignorés.
+/tp-presentation/src/main/resources/application-dev.properties
+/tp-presentation/src/main/resources/application-prod.properties
+/tp-presentation/src/main/resources/application-secret.properties
+# Ou une règle plus générale si vous suivez une convention :
+# **/src/main/resources/application-*.properties # ATTENTION: ceci ignorerait aussi application.properties si mal utilisé.
+# Il est plus sûr de lister explicitement les fichiers de profil contenant des secrets.
+
+# Autres fichiers potentiellement sensibles (adaptez à votre projet) :
+# .env
+# secrets.yml
+# *.pem
+# *.key
+
+# ==============================================================================
+# DIVERS
+# ==============================================================================
+
+# Fichiers de cache
+.cache/
+
+# Fichiers spécifiques à Spring Boot DevTools (si vous l'utilisez et avez une config locale)
+# .spring-boot-devtools.properties
