@@ -15,43 +15,31 @@
         <dependency>
             <groupId>com.sido.syspharma</groupId>
             <artifactId>tp-domaine</artifactId>
-            <version>${project.version}</version>
+
         </dependency>
         <dependency>
             <groupId>com.sido.syspharma</groupId>
             <artifactId>tp-dao</artifactId>
-            <version>${project.version}</version>
+
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <!-- SUPPRESSION de la dépendance log4j:log4j -->
+        <!--
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
-        <!-- Dépendances de test pour CE module -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <!-- La version et le scope 'test' sont hérités du pom.xml parent -->
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <!-- Nécessaire pour l'exécution des tests par Surefire/IDE -->
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-junit-jupiter</artifactId>
-            <!-- Pour l'intégration de Mockito avec le cycle de vie de JUnit 5 (@ExtendWith(MockitoExtension.class)) -->
-        </dependency>
-        <!-- Si vous utilisez @ParameterizedTest, ajoutez aussi : -->
-        <!--
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-        </dependency>
         -->
+        <!-- JUnit & Mockito pour les tests de ce module -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 </project>

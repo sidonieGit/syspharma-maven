@@ -5,18 +5,21 @@ import com.sido.syspharma.dao.interfaces.AbstractDAO;
 import com.sido.syspharma.dao.interfaces.IClientDAO;
 import com.sido.syspharma.domaine.enums.Role;
 import com.sido.syspharma.domaine.model.Client;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired; // Pour l'injection du DataSource au constructeur
+import org.springframework.stereotype.Repository; // Annotation Spring pour le bean DAO
 
-// Statement, PreparedStatement, ResultSet, SQLException sont gérés par AbstractDAO ou implicites
-import java.util.ArrayList;
+import javax.sql.DataSource; // Importer DataSource
 import java.util.List;
 import java.util.Optional;
 
+@Repository // Indique à Spring que c'est un bean DAO
 public class ClientDAOImpl extends AbstractDAO implements IClientDAO {
 
-    private static final Logger logger = Logger.getLogger(ClientDAOImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClientDAOImpl.class);
 
-    // RowMapper spécifique pour l'entité Client
+    // RowMapper spécifique pour l'entité Client (inchangé)
     private final RowMapper<Client> clientRowMapper = rs -> {
         Role roleFromDb = Role.valueOf(rs.getString("role"));
         Client client = new Client(
@@ -29,20 +32,25 @@ public class ClientDAOImpl extends AbstractDAO implements IClientDAO {
                 roleFromDb
         );
         client.setId(rs.getLong("id"));
-        // client.setNumeroCommande(rs.getString("numero_commande")); // Si applicable
         return client;
     };
 
-    public ClientDAOImpl() {
-        // Constructeur par défaut
-        // Si AbstractDAO avait un constructeur avec ConnectionProvider, on l'appellerait ici.
+    /**
+     * Constructeur appelé par Spring pour injecter le DataSource.
+     * @param dataSource Le DataSource configuré par Spring.
+     */
+    @Autowired // Spring va chercher un bean de type DataSource et l'injecter ici.
+    public ClientDAOImpl(DataSource dataSource) {
+        super(dataSource); // Appelle le constructeur de AbstractDAO avec le DataSource
+        logger.info("ClientDAOImpl bean créé et DataSource injecté.");
     }
 
     @Override
     public boolean inserer(Client client) throws DatabaseException {
         String sql = "INSERT INTO client (nom, prenom, email, adresse, tel, password, role) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        logger.debug("Insertion du client: " + client.getEmail());
 
-        long generatedIdOrAffectedRows = executeUpdate(sql, stmt -> {
+        long generatedIdOrAffectedRows = executeUpdate(sql, stmt -> { // executeUpdate utilisera le dataSource de AbstractDAO
             stmt.setString(1, client.getNom());
             stmt.setString(2, client.getPrenom());
             stmt.setString(3, client.getEmail());
@@ -52,35 +60,30 @@ public class ClientDAOImpl extends AbstractDAO implements IClientDAO {
             stmt.setString(7, client.getCompte().getRole().name());
         }, true); // true pour récupérer les clés générées
 
-        if (generatedIdOrAffectedRows > 0 && client.getId() == null) { // Si l'ID a été généré et retourné
-            if (generatedIdOrAffectedRows != 1 ) { // Cas où generatedIdOrAffectedRows est l'ID
+        if (generatedIdOrAffectedRows > 0) {
+            if (client.getId() == null && generatedIdOrAffectedRows != 1) {
                 client.setId(generatedIdOrAffectedRows);
                 logger.info("✅ Client inséré : " + client.getEmail() + ", ID généré : " + client.getId());
-            } else { // Cas où generatedIdOrAffectedRows est le nombre de lignes (1) et l'ID n'a pas été retourné par la DB (peu probable avec auto_increment)
-                logger.warn("⚠️ Client inséré, mais l'ID généré n'a pas été explicitement retourné, lignes affectées: " + generatedIdOrAffectedRows);
+            } else {
+                logger.info("✅ Client inséré (ou opération réussie) pour : " + client.getEmail() + ", lignes affectées/ID: " + generatedIdOrAffectedRows);
             }
             return true;
-        } else if (generatedIdOrAffectedRows > 0 && client.getId() != null) { // L'ID était déjà là (si la logique changeait) ou si l'ID a été correctement setté
-            logger.info("✅ Client inséré (ou opération réussie) : " + client.getEmail() + ", lignes affectées/ID: " + generatedIdOrAffectedRows);
-            return true;
         }
-        logger.warn("Client non inséré, aucune ligne affectée ou ID généré pour : " + client.getEmail());
+        logger.warn("Client non inséré pour : " + client.getEmail());
         return false;
     }
-
 
     @Override
     public Optional<Client> trouverParEmail(String email) throws DatabaseException {
         String sql = "SELECT * FROM client WHERE email = ?";
+        logger.debug("Recherche du client par email: " + email);
         return executeQueryForSingleResult(sql, stmt -> stmt.setString(1, email), clientRowMapper);
     }
 
     @Override
     public List<Client> listerTous() throws DatabaseException {
         String sql = "SELECT * FROM client";
-        // Pas de paramètres pour lister tous, donc on peut passer une lambda vide ou null pour paramsSetter
+        logger.debug("Listage de tous les clients.");
         return executeQueryForList(sql, null, clientRowMapper);
-        // Ou explicitement :
-        // return executeQueryForList(sql, stmt -> {}, clientRowMapper);
     }
 }

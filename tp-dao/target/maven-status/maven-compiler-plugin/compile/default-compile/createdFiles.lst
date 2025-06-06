@@ -1,0 +1,13 @@
+com\sido\syspharma\dao\exceptions\DatabaseException.class
+com\sido\syspharma\dao\interfaces\AbstractDAO.class
+com\sido\syspharma\dao\impl\ClientDAOImpl.class
+com\sido\syspharma\dao\interfaces\AbstractDAO$RowMapper.class
+com\sido\syspharma\dao\interfaces\AbstractDAO$StatementOperation.class
+com\sido\syspharma\dao\database\AppConfig.class
+com\sido\syspharma\dao\interfaces\ICompteDAO.class
+com\sido\syspharma\dao\impl\MedicamentDAOImpl.class
+com\sido\syspharma\dao\database\TableCreator.class
+com\sido\syspharma\dao\database\ConnexionDB.class
+com\sido\syspharma\dao\interfaces\IClientDAO.class
+com\sido\syspharma\dao\interfaces\IMedicamentDAO.class
+com\sido\syspharma\dao\impl\CompteDAOImpl.class

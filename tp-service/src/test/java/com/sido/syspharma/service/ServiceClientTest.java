@@ -1,272 +1,328 @@
 // Déclare le package où se trouve cette classe de test.
-// Conventionnellement, il reflète la structure du package du code testé (src/main/java).
 package com.sido.syspharma.service;
 
-// Imports des classes nécessaires pour ce test :
-import com.sido.syspharma.dao.exceptions.DatabaseException; // Exception personnalisée pour les erreurs de base de données.
-import com.sido.syspharma.dao.interfaces.IClientDAO; // Interface du DAO que nous allons mocker.
-import com.sido.syspharma.domaine.enums.Role; // Enum pour les rôles des utilisateurs.
-import com.sido.syspharma.domaine.exceptions.BusinessException; // Exception personnalisée pour les erreurs métier.
-import com.sido.syspharma.domaine.model.Client; // Classe modèle (entité) que nous allons manipuler.
+// Imports nécessaires.
+import com.sido.syspharma.dao.exceptions.DatabaseException;
+import com.sido.syspharma.dao.interfaces.IClientDAO;
+import com.sido.syspharma.domaine.enums.Role;
+import com.sido.syspharma.domaine.exceptions.BusinessException;
+import com.sido.syspharma.domaine.model.Client;
 
-// Imports de JUnit 5 pour les annotations et fonctionnalités de test :
-import org.junit.jupiter.api.BeforeEach; // Annotation pour une méthode à exécuter avant chaque test.
-import org.junit.jupiter.api.DisplayName; // Annotation pour donner un nom descriptif au test/classe de test.
-import org.junit.jupiter.api.Test; // Annotation pour marquer une méthode comme étant un cas de test.
-import org.junit.jupiter.api.extension.ExtendWith; // Permet d'enregistrer des extensions JUnit (comme Mockito).
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-// Imports de Mockito pour la création de mocks et l'injection de dépendances :
-import org.mockito.InjectMocks; // Annote un champ où les mocks doivent être injectés (la classe testée).
-import org.mockito.Mock; // Annote un champ qui doit être un mock.
-import org.mockito.junit.jupiter.MockitoExtension; // Extension JUnit 5 pour initialiser les mocks et @InjectMocks.
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.SQLException; // Importé pour pouvoir créer une instance de SQLException comme cause simulée.
-import java.util.Arrays; // Classe utilitaire pour créer des listes à partir de tableaux.
-import java.util.Collections; // Classe utilitaire pour les collections, notamment pour `emptyList()`.
-import java.util.List; // Interface pour les listes.
-import java.util.Optional; // Conteneur pour une valeur qui peut être absente.
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
-// Imports statiques pour les méthodes d'assertion de JUnit et les méthodes statiques de Mockito.
-// Cela permet d'écrire assertEquals(...) au lieu de Assertions.assertEquals(...), etc.
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-// @ExtendWith(MockitoExtension.class) : Indique à JUnit 5 d'utiliser l'extension Mockito.
-// Cette extension s'occupe d'initialiser les champs annotés avec @Mock et @InjectMocks.
-@ExtendWith(MockitoExtension.class)
-// @DisplayName : Donne un nom lisible à cette suite de tests, qui apparaîtra dans les rapports.
-@DisplayName("Tests de la couche ServiceClient")
-class ServiceClientTest { // Le nom de la classe de test se termine conventionnellement par "Test".
 
-    // @Mock : Demande à Mockito de créer un objet mock (simulacre) de l'interface IClientDAO.
-    // Cet objet mock ne contiendra pas de vraie logique d'accès à la base de données,
-    // mais on pourra lui dire comment se comporter (ex: quoi retourner quand une méthode est appelée).
-    @Mock
+@ExtendWith(MockitoExtension.class) // Active l'intégration Mockito-JUnit 5.
+@DisplayName("Tests Unitaires pour la classe ServiceClient") // Nom global pour cette suite de tests.
+class ServiceClientTest {
+
+    @Mock // Crée un mock de IClientDAO. Mockito contrôlera son comportement.
     private IClientDAO clientDAO;
 
-    // @InjectMocks : Demande à Mockito de créer une instance réelle de ServiceClient
-    // ET d'essayer d'injecter tous les champs annotés @Mock (ici, clientDAO)
-    // dans cette instance de ServiceClient (typiquement via son constructeur ou des setters).
-    // La classe ServiceClient doit avoir un constructeur ou un setter approprié pour que cela fonctionne.
-    @InjectMocks
+    @InjectMocks // Crée une instance de ServiceClient et y injecte le mock clientDAO.
     private ServiceClient serviceClient;
 
-    // Déclaration de variables d'instance pour les objets Client qui seront utilisés
-    // dans plusieurs méthodes de test. Ils seront initialisés dans la méthode setUp().
+    // Variables pour les objets Client de test, initialisées avant chaque test.
     private Client clientValidePourTest;
-    private Client clientValidePourTest2;
+    private Client clientAvecEmailExistant;
+    private Client clientPourListe1;
+    private Client clientPourListe2;
 
-    // @BeforeEach : Cette méthode sera exécutée par JUnit AVANT CHAQUE méthode de test (@Test)
-    // dans cette classe. Utile pour initialiser des objets communs ou réinitialiser un état.
-    @BeforeEach
+    @BeforeEach // Méthode exécutée avant chaque @Test.
     void setUp() {
-        // Crée une instance de Client avec des données valides pour les tests.
-        // Utilise le constructeur qui prend tous les arguments nécessaires.
-        clientValidePourTest = new Client("Doe", "John", "test@example.com", "123 Main St", "555-1234", "password123", Role.CLIENT);
-        // Assigne un ID à cet objet client. Dans une vraie application, l'ID serait
-        // généralement assigné par la base de données lors de l'insertion.
-        clientValidePourTest.setId(1L);
+        // Initialisation des objets Client avec des données de test.
+        clientValidePourTest = new Client("ValideNom", "ValidePrenom", "valide@example.com", "1 Valide St", "111-1111", "password123", Role.CLIENT);
+        clientValidePourTest.setId(1L); // Simule un ID post-persistance.
 
-        // Crée une deuxième instance de Client pour les tests qui manipulent des listes.
-        clientValidePourTest2 = new Client("Smith", "Jane", "jane@example.com", "456 Oak Ave", "555-5678", "pass456", Role.CLIENT);
-        clientValidePourTest2.setId(2L);
+        clientAvecEmailExistant = new Client("ExistantNom", "ExistantPrenom", "existant@example.com", "2 Existant Ave", "222-2222", "passwordExistant", Role.CLIENT);
+        clientAvecEmailExistant.setId(2L);
+
+        clientPourListe1 = new Client("ListeNom1", "ListePrenom1", "liste1@example.com", "Addr1", "333-1111", "passListe1", Role.CLIENT);
+        clientPourListe1.setId(3L);
+        clientPourListe2 = new Client("ListeNom2", "ListePrenom2", "liste2@example.com", "Addr2", "333-2222", "passListe2", Role.CLIENT);
+        clientPourListe2.setId(4L);
     }
 
-    // --- Début de la section des tests pour la méthode creerCompte ---
+    // @Nested regroupe les tests pour la méthode creerCompte.
+    @Nested
+    @DisplayName("Tests pour la méthode creerCompte(Client client)")
+    class CreerCompteTests {
 
-    // @Test : Marque cette méthode comme un cas de test exécutable par JUnit.
-    @Test
-    // @DisplayName : Fournit un nom lisible pour ce cas de test spécifique.
-    @DisplayName("creerCompte: Devrait créer un compte client avec succès")
-    // La méthode de test peut déclarer les exceptions qu'elle s'attend à ce que le code testé lève (ou qu'elle propage).
-    void creerCompte_Success() throws BusinessException, DatabaseException {
-        // Arrange (Préparation) : Configurer le comportement du mock.
-        // when(...) : Spécifie une condition (appel de méthode sur un mock).
-        // clientDAO.inserer(any(Client.class)) : Lorsque la méthode 'inserer' du mock 'clientDAO'
-        // est appelée avec n'importe quel objet de type Client (grâce à any(Client.class))...
-        // thenReturn(true) : ...alors, le mock doit retourner 'true'.
-        when(clientDAO.inserer(any(Client.class))).thenReturn(true);
+        @Test // Marque comme un cas de test.
+        @DisplayName("Devrait créer un compte avec succès si données valides et email non existant")
+        void creerCompte_Success_When_ValidDataAndEmailNotExistsAndDAOInserts() throws BusinessException, DatabaseException {
+            // Arrange : Configurer le comportement des mocks.
+            // Simule que l'email n'est pas trouvé dans la DB.
+            when(clientDAO.trouverParEmail(clientValidePourTest.getEmail())).thenReturn(Optional.empty());
+            // Simule que l'insertion dans le DAO réussit.
+            when(clientDAO.inserer(clientValidePourTest)).thenReturn(true);
 
-        // Act (Action) : Exécuter la méthode de serviceClient que l'on veut tester.
-        // On passe l'objet clientValidePourTest initialisé dans setUp().
-        boolean result = serviceClient.creerCompte(clientValidePourTest);
+            // Act : Exécuter la méthode testée.
+            boolean resultat = serviceClient.creerCompte(clientValidePourTest);
 
-        // Assert (Vérification) : Vérifier que le résultat est celui attendu.
-        // assertTrue(boolean condition, String messageSiEchec) : Vérifie que la condition est vraie.
-        assertTrue(result, "La création de compte devrait retourner true");
-        // verify(mockObject, times(int)) : Vérifie qu'une méthode d'un mock a été appelée un certain nombre de fois.
-        // clientDAO : Le mock à vérifier.
-        // times(1) : On s'attend à ce que la méthode ait été appelée exactement une fois.
-        // .inserer(clientValidePourTest) : La méthode spécifique et l'argument exact attendu.
-        verify(clientDAO, times(1)).inserer(clientValidePourTest);
+            // Assert : Vérifier le résultat et les interactions.
+            assertTrue(resultat, "La création de compte devrait retourner true.");
+            // Vérifier que trouverParEmail a été appelé une fois.
+            verify(clientDAO, times(1)).trouverParEmail(clientValidePourTest.getEmail());
+            // Vérifier que inserer a été appelé une fois.
+            verify(clientDAO, times(1)).inserer(clientValidePourTest);
+        }
+
+        @Test
+        @DisplayName("Devrait retourner false si client valide, email non existant mais insertion DAO retourne false")
+        void creerCompte_ReturnsFalse_When_DAOInsertReturnsFalse() throws BusinessException, DatabaseException {
+            // Arrange
+            when(clientDAO.trouverParEmail(clientValidePourTest.getEmail())).thenReturn(Optional.empty());
+            when(clientDAO.inserer(clientValidePourTest)).thenReturn(false); // Simule un échec silencieux du DAO.
+
+            // Act
+            boolean resultat = serviceClient.creerCompte(clientValidePourTest);
+
+            // Assert
+            assertFalse(resultat, "La création de compte devrait retourner false.");
+            verify(clientDAO, times(1)).trouverParEmail(clientValidePourTest.getEmail());
+            verify(clientDAO, times(1)).inserer(clientValidePourTest);
+        }
+
+        @Test
+        @DisplayName("Devrait lancer BusinessException si l'email du client existe déjà")
+        void creerCompte_ThrowsBusinessException_When_EmailAlreadyExists() throws DatabaseException {
+            // Arrange : Simule que l'email existe déjà.
+            when(clientDAO.trouverParEmail(clientAvecEmailExistant.getEmail())).thenReturn(Optional.of(clientAvecEmailExistant));
+
+            // Act & Assert : Vérifie qu'une BusinessException est lancée.
+            BusinessException thrown = assertThrows(BusinessException.class, () -> {
+                serviceClient.creerCompte(clientAvecEmailExistant);
+            });
+            // Vérifie que le message de l'exception est correct.
+            assertTrue(thrown.getMessage().contains("Un compte avec l'email '" + clientAvecEmailExistant.getEmail() + "' existe déjà."),
+                    "Le message devrait indiquer que l'email existe déjà.");
+            verify(clientDAO, times(1)).trouverParEmail(clientAvecEmailExistant.getEmail());
+            verify(clientDAO, never()).inserer(any(Client.class)); // L'insertion ne doit pas être appelée.
+        }
+
+
+        @Test
+        @DisplayName("Devrait lancer BusinessException si DatabaseException lors de la recherche d'email")
+        void creerCompte_ThrowsBusinessException_When_DatabaseExceptionOnEmailCheck() throws DatabaseException {
+            // Arrange : Simule une erreur DB lors de la recherche d'email.
+            DatabaseException dbEx = new DatabaseException("Erreur DB simulée (recherche email)", new SQLException("Cause SQL"));
+            when(clientDAO.trouverParEmail(clientValidePourTest.getEmail())).thenThrow(dbEx);
+
+            // Act & Assert
+            BusinessException thrown = assertThrows(BusinessException.class, () -> {
+                serviceClient.creerCompte(clientValidePourTest);
+            });
+            // Vérifie que le message est celui de l'exception wrappée par le service.
+            assertTrue(thrown.getMessage().contains("Une erreur technique est survenue lors de la création de votre compte"),
+                    "Le message devrait être celui de l'exception wrappée.");
+            // Vérifie que la cause de la BusinessException est bien la DatabaseException simulée.
+            assertSame(dbEx, thrown.getCause(), "La DatabaseException devrait être la cause.");
+            verify(clientDAO, times(1)).trouverParEmail(clientValidePourTest.getEmail());
+            verify(clientDAO, never()).inserer(any(Client.class));
+        }
+
+        @Test
+        @DisplayName("Devrait lancer BusinessException si DatabaseException lors de l'insertion")
+        void creerCompte_ThrowsBusinessException_When_DatabaseExceptionOnInsert() throws DatabaseException {
+            // Arrange
+            when(clientDAO.trouverParEmail(clientValidePourTest.getEmail())).thenReturn(Optional.empty()); // Email non trouvé
+            DatabaseException dbEx = new DatabaseException("Erreur DAO insertion", new SQLException("Cause SQL"));
+            when(clientDAO.inserer(clientValidePourTest)).thenThrow(dbEx); // Lancer l'exception sur inserer
+
+            // Act & Assert
+            BusinessException thrown = assertThrows(BusinessException.class, () -> {
+                serviceClient.creerCompte(clientValidePourTest);
+            });
+            assertTrue(thrown.getMessage().contains("Une erreur technique est survenue lors de la création de votre compte"));
+            assertSame(dbEx, thrown.getCause());
+            verify(clientDAO, times(1)).trouverParEmail(clientValidePourTest.getEmail());
+            verify(clientDAO, times(1)).inserer(clientValidePourTest);
+        }
+
+        @Test
+        @DisplayName("Devrait lancer BusinessException si le client est null")
+        void creerCompte_ClientIsNull_ShouldThrowBusinessException() throws DatabaseException {
+            // Act & Assert
+            BusinessException thrown = assertThrows(BusinessException.class, () -> {
+                serviceClient.creerCompte(null);
+            });
+            // CORRECTION : Le message est maintenant spécifique pour ce cas dans ServiceClient.
+            assertTrue(thrown.getMessage().contains("informations du client ne peuvent pas être nulles"),
+                    "Le message d'exception pour client null est incorrect.");
+            verify(clientDAO, never()).trouverParEmail(anyString());
+            verify(clientDAO, never()).inserer(any(Client.class));
+        }
+
+        @Test
+        @DisplayName("Devrait lancer BusinessException si nom du client est vide")
+        void creerCompte_ClientNomEstVide_ShouldThrowBusinessException() throws DatabaseException {
+            // Arrange
+            Client clientSansNom = new Client("", "John", "nomvide@example.com", "Addr", "123", "password123", Role.CLIENT);
+            // Act & Assert
+            BusinessException thrown = assertThrows(BusinessException.class, () -> {
+                serviceClient.creerCompte(clientSansNom);
+            });
+            // CORRECTION : Le message est maintenant spécifique.
+            assertTrue(thrown.getMessage().contains("nom du client ne peut pas être vide"),
+                    "Le message d'exception pour nom vide est incorrect.");
+            verifyNoInteractions(clientDAO); // Aucune interaction avec le DAO si la validation échoue avant.
+        }
+
+        @Test
+        @DisplayName("Devrait lancer BusinessException si l'email du client est invalide")
+        void creerCompte_ClientEmailInvalide_ShouldThrowBusinessException() throws DatabaseException {
+            // Arrange
+            Client clientEmailInvalide = new Client("Doe", "John", "emailinvalide", "Addr", "123", "password123", Role.CLIENT);
+            // Act & Assert
+            BusinessException thrown = assertThrows(BusinessException.class, () -> {
+                serviceClient.creerCompte(clientEmailInvalide);
+            });
+            // CORRECTION : Le message est maintenant spécifique.
+            assertTrue(thrown.getMessage().contains("Format d'email invalide"),
+                    "Le message d'exception pour email invalide est incorrect.");
+            verifyNoInteractions(clientDAO);
+        }
+
+        @Test
+        @DisplayName("Devrait lancer BusinessException si le mot de passe est trop court")
+        void creerCompte_ClientPasswordTropCourt_ShouldThrowBusinessException() throws DatabaseException {
+            // Arrange
+            Client clientMdpCourt = new Client("Doe", "John", "mdpcourt@example.com", "Addr", "123", "pass", Role.CLIENT);
+            // Act & Assert
+            BusinessException thrown = assertThrows(BusinessException.class, () -> {
+                serviceClient.creerCompte(clientMdpCourt); // Cet appel devrait maintenant lever l'exception
+            });
+            // CORRECTION : Le message est maintenant spécifique.
+            assertTrue(thrown.getMessage().contains("mot de passe doit contenir au moins 6 caractères"),
+                    "Le message d'exception pour mot de passe trop court est incorrect.");
+            verifyNoInteractions(clientDAO);
+        }
     }
 
-    @Test
-    @DisplayName("creerCompte: Devrait retourner false si l'insertion DAO échoue (retourne false)")
-    void creerCompte_DAOReturnsFalse() throws BusinessException, DatabaseException {
-        // Arrange : Configurer le mock pour simuler un échec "non exceptionnel" du DAO.
-        when(clientDAO.inserer(any(Client.class))).thenReturn(false);
 
-        // Act
-        boolean result = serviceClient.creerCompte(clientValidePourTest);
+    // @Nested regroupe les tests pour la méthode seConnecter.
+    @Nested
+    @DisplayName("Tests pour la méthode seConnecter(String email, String motDePasse)")
+    class SeConnecterTests {
 
-        // Assert : S'attendre à ce que le service retourne false.
-        assertFalse(result, "La création de compte devrait retourner false si le DAO retourne false");
-        verify(clientDAO, times(1)).inserer(clientValidePourTest);
+        @Test
+        @DisplayName("Devrait retourner true avec des identifiants corrects")
+        void seConnecter_Success() throws BusinessException, DatabaseException {
+            // Arrange
+            when(clientDAO.trouverParEmail(clientValidePourTest.getEmail())).thenReturn(Optional.of(clientValidePourTest));
+            // Act
+            boolean resultat = serviceClient.seConnecter(clientValidePourTest.getEmail(), clientValidePourTest.getPassword());
+            // Assert
+            assertTrue(resultat, "La connexion devrait réussir.");
+            verify(clientDAO, times(1)).trouverParEmail(clientValidePourTest.getEmail());
+        }
+
+        @Test
+        @DisplayName("Devrait retourner false avec un mot de passe incorrect")
+        void seConnecter_WrongPassword() throws BusinessException, DatabaseException {
+            // Arrange
+            when(clientDAO.trouverParEmail(clientValidePourTest.getEmail())).thenReturn(Optional.of(clientValidePourTest));
+            // Act
+            boolean resultat = serviceClient.seConnecter(clientValidePourTest.getEmail(), "motdepasseIncorrect");
+            // Assert
+            assertFalse(resultat, "La connexion devrait échouer.");
+            verify(clientDAO, times(1)).trouverParEmail(clientValidePourTest.getEmail());
+        }
+
+        @Test
+        @DisplayName("Devrait retourner false si l'email n'est pas trouvé")
+        void seConnecter_EmailNotFound() throws BusinessException, DatabaseException {
+            // Arrange
+            when(clientDAO.trouverParEmail("unknown@example.com")).thenReturn(Optional.empty());
+            // Act
+            boolean resultat = serviceClient.seConnecter("unknown@example.com", "anypassword");
+            // Assert
+            assertFalse(resultat, "La connexion devrait échouer.");
+            verify(clientDAO, times(1)).trouverParEmail("unknown@example.com");
+        }
+
+        @Test
+        @DisplayName("Devrait lancer BusinessException si DatabaseException lors de la recherche")
+        void seConnecter_ThrowsBusinessException_When_DAOThrowsDatabaseException() throws DatabaseException {
+            // Arrange
+            DatabaseException dbEx = new DatabaseException("Erreur DB recherche", new SQLException("Cause SQL"));
+            when(clientDAO.trouverParEmail(anyString())).thenThrow(dbEx);
+            // Act & Assert
+            BusinessException thrown = assertThrows(BusinessException.class, () -> {
+                serviceClient.seConnecter("any@email.com", "anypassword");
+            });
+            // Le message exact vient de votre ServiceClient.seConnecter() : "Connexion impossible"
+            assertTrue(thrown.getMessage().contains("Connexion impossible"), "Le message de BusinessException est incorrect.");
+            assertSame(dbEx, thrown.getCause());
+            verify(clientDAO, times(1)).trouverParEmail(anyString());
+        }
     }
 
-    @Test
-    @DisplayName("creerCompte: Devrait lancer BusinessException si DatabaseException lors de l'insertion")
-    void creerCompte_ThrowsBusinessException_When_DAOThrowsDatabaseException() throws DatabaseException {
-        // Arrange : Configurer le mock pour qu'il lance une DatabaseException.
-        // On crée une instance de SQLException pour simuler une cause d'erreur bas niveau.
-        SQLException causeSimulee = new SQLException("Erreur SQL d'insertion simulée");
-        // On crée une instance de DatabaseException, en lui passant la SQLException comme cause.
-        DatabaseException dbExceptionSimulee = new DatabaseException("Erreur interne du DAO lors de l'insertion", causeSimulee);
-        // doThrow(exception).when(mock).method(...) : Syntaxe pour dire au mock de lancer une exception.
-        doThrow(dbExceptionSimulee).when(clientDAO).inserer(any(Client.class));
 
-        // Act & Assert : On s'attend à ce que l'appel à serviceClient.creerCompte lance une BusinessException.
-        // assertThrows(ClasseExceptionAttendue.class, Executable, String messageSiEchec) :
-        // Vérifie qu'une exception du type attendu est lancée par l'exécutable (fourni par une lambda).
-        // Retourne l'exception lancée pour des vérifications supplémentaires.
-        BusinessException thrown = assertThrows(BusinessException.class, () -> {
-            serviceClient.creerCompte(clientValidePourTest);
-        }, "Devrait lancer BusinessException");
+    // @Nested regroupe les tests pour la méthode getTousLesClients.
+    @Nested
+    @DisplayName("Tests pour la méthode getTousLesClients()")
+    class GetTousLesClientsTests {
 
-        // Vérifications supplémentaires sur l'exception attrapée :
-        // S'assurer que le message de la BusinessException contient un texte pertinent.
-        assertTrue(thrown.getMessage().contains("Erreur lors de la création du client"), "Le message de BusinessException devrait indiquer une erreur de création.");
-        // S'assurer que la BusinessException a bien une cause (l'exception originale du DAO).
-        assertNotNull(thrown.getCause(), "BusinessException devrait avoir une cause.");
-        // S'assurer que la cause de la BusinessException est bien l'instance de DatabaseException que nous avons simulée.
-        assertSame(dbExceptionSimulee, thrown.getCause(), "La cause de BusinessException devrait être la DatabaseException simulée.");
-        // Vérifier que la méthode du DAO a quand même été appelée.
-        verify(clientDAO, times(1)).inserer(clientValidePourTest);
-    }
+        @Test
+        @DisplayName("Devrait retourner une liste de clients si le DAO en fournit")
+        void getTousLesClients_Success() throws BusinessException, DatabaseException {
+            // Arrange
+            List<Client> listeAttendue = Arrays.asList(clientPourListe1, clientPourListe2);
+            when(clientDAO.listerTous()).thenReturn(listeAttendue);
+            // Act
+            List<Client> resultat = serviceClient.getTousLesClients();
+            // Assert
+            assertNotNull(resultat);
+            assertEquals(2, resultat.size());
+            assertSame(listeAttendue, resultat, "La liste retournée devrait être celle du DAO.");
+            verify(clientDAO, times(1)).listerTous();
+        }
 
-    // --- Début de la section des tests pour la méthode seConnecter ---
+        @Test
+        @DisplayName("Devrait retourner une liste vide si le DAO retourne une liste vide")
+        void getTousLesClients_EmptyList() throws BusinessException, DatabaseException {
+            // Arrange
+            when(clientDAO.listerTous()).thenReturn(Collections.emptyList());
+            // Act
+            List<Client> resultat = serviceClient.getTousLesClients();
+            // Assert
+            assertNotNull(resultat);
+            assertTrue(resultat.isEmpty());
+            verify(clientDAO, times(1)).listerTous();
+        }
 
-    @Test
-    @DisplayName("seConnecter: Devrait permettre la connexion avec des identifiants corrects")
-    void seConnecter_Success() throws BusinessException, DatabaseException {
-        // Arrange : Configurer le mock clientDAO.
-        // Quand trouverParEmail est appelé avec l'email de clientValidePourTest...
-        // ...retourner un Optional contenant clientValidePourTest (simule que le client existe).
-        when(clientDAO.trouverParEmail(clientValidePourTest.getEmail())).thenReturn(Optional.of(clientValidePourTest));
-
-        // Act : Appeler la méthode seConnecter du service.
-        // La méthode seConnecter de votre ServiceClient retourne un boolean.
-        boolean result = serviceClient.seConnecter(clientValidePourTest.getEmail(), clientValidePourTest.getPassword());
-
-        // Assert : Vérifier que la connexion a réussi.
-        assertTrue(result, "La connexion devrait être réussie et retourner true");
-        // Vérifier que la méthode trouverParEmail du DAO a été appelée.
-        verify(clientDAO, times(1)).trouverParEmail(clientValidePourTest.getEmail());
-    }
-
-    @Test
-    @DisplayName("seConnecter: Devrait refuser la connexion avec un mot de passe incorrect")
-    void seConnecter_WrongPassword() throws BusinessException, DatabaseException {
-        // Arrange : Simuler que le client est trouvé par email.
-        when(clientDAO.trouverParEmail(clientValidePourTest.getEmail())).thenReturn(Optional.of(clientValidePourTest));
-
-        // Act : Tenter de se connecter avec un mot de passe incorrect.
-        boolean result = serviceClient.seConnecter(clientValidePourTest.getEmail(), "motdepasseIncorrect");
-
-        // Assert : Vérifier que la connexion a échoué.
-        assertFalse(result, "La connexion devrait échouer et retourner false avec un mot de passe incorrect");
-        verify(clientDAO, times(1)).trouverParEmail(clientValidePourTest.getEmail());
-    }
-
-    @Test
-    @DisplayName("seConnecter: Devrait refuser la connexion si l'email n'est pas trouvé")
-    void seConnecter_EmailNotFound() throws BusinessException, DatabaseException {
-        // Arrange : Simuler que l'email n'est pas trouvé dans la base de données.
-        // Le mock retourne un Optional vide.
-        when(clientDAO.trouverParEmail("unknown@example.com")).thenReturn(Optional.empty());
-
-        // Act : Tenter de se connecter avec cet email inconnu.
-        boolean result = serviceClient.seConnecter("unknown@example.com", "anypassword");
-
-        // Assert : Vérifier que la connexion a échoué.
-        assertFalse(result, "La connexion devrait échouer et retourner false si l'email n'est pas trouvé");
-        verify(clientDAO, times(1)).trouverParEmail("unknown@example.com");
-    }
-
-    @Test
-    @DisplayName("seConnecter: Devrait lancer BusinessException si DatabaseException lors de la recherche")
-    void seConnecter_ThrowsBusinessException_When_DAOThrowsDatabaseException() throws DatabaseException {
-        // Arrange : Simuler que le DAO lance une DatabaseException lors de la recherche.
-        SQLException causeSimulee = new SQLException("Erreur SQL de recherche simulée");
-        DatabaseException dbExceptionSimulee = new DatabaseException("Erreur interne du DAO lors de la recherche par email", causeSimulee);
-        // anyString() : correspond à n'importe quel argument de type String.
-        doThrow(dbExceptionSimulee).when(clientDAO).trouverParEmail(anyString());
-
-        // Act & Assert : S'attendre à ce qu'une BusinessException soit lancée.
-        BusinessException thrown = assertThrows(BusinessException.class, () -> {
-            serviceClient.seConnecter("any@email.com", "anypassword");
-        }, "Devrait lancer BusinessException");
-
-        assertTrue(thrown.getMessage().contains("Connexion impossible"), "Le message de BusinessException devrait indiquer une impossibilité de connexion.");
-        assertNotNull(thrown.getCause(), "BusinessException devrait avoir une cause.");
-        assertSame(dbExceptionSimulee, thrown.getCause(), "La cause de BusinessException devrait être la DatabaseException simulée.");
-        verify(clientDAO, times(1)).trouverParEmail(anyString());
-    }
-
-    // --- Début de la section des tests pour la méthode getTousLesClients ---
-
-    @Test
-    @DisplayName("getTousLesClients: Devrait retourner une liste de clients")
-    void getTousLesClients_Success() throws BusinessException, DatabaseException {
-        // Arrange : Configurer le mock pour retourner une liste de clients.
-        // Arrays.asList(...) crée une liste fixe à partir des éléments fournis.
-        when(clientDAO.listerTous()).thenReturn(Arrays.asList(clientValidePourTest, clientValidePourTest2));
-
-        // Act : Appeler la méthode du service.
-        List<Client> clients = serviceClient.getTousLesClients();
-
-        // Assert : Vérifier la liste retournée.
-        assertNotNull(clients, "La liste des clients ne devrait pas être null");
-        assertEquals(2, clients.size(), "La liste devrait contenir 2 clients");
-        // Vérifier que les clients attendus sont présents dans la liste.
-        assertTrue(clients.contains(clientValidePourTest), "La liste devrait contenir le premier client de test.");
-        assertTrue(clients.contains(clientValidePourTest2), "La liste devrait contenir le deuxième client de test.");
-        verify(clientDAO, times(1)).listerTous();
-    }
-
-    @Test
-    @DisplayName("getTousLesClients: Devrait retourner une liste vide si aucun client n'est trouvé")
-    void getTousLesClients_EmptyList() throws BusinessException, DatabaseException {
-        // Arrange : Configurer le mock pour retourner une liste vide.
-        // Collections.emptyList() retourne une liste immuable vide.
-        when(clientDAO.listerTous()).thenReturn(Collections.emptyList());
-
-        // Act
-        List<Client> clients = serviceClient.getTousLesClients();
-
-        // Assert
-        assertNotNull(clients, "La liste des clients ne devrait pas être null même si vide");
-        assertTrue(clients.isEmpty(), "La liste des clients devrait être vide");
-        verify(clientDAO, times(1)).listerTous();
-    }
-
-    @Test
-    @DisplayName("getTousLesClients: Devrait lancer BusinessException si DatabaseException survient lors du listage")
-    void getTousLesClients_ThrowsBusinessException_When_DAOThrowsDatabaseException() throws DatabaseException {
-        // Arrange : Simuler que le DAO lance une DatabaseException.
-        SQLException causeSimulee = new SQLException("Erreur SQL de listage simulée");
-        DatabaseException dbExceptionSimulee = new DatabaseException("Erreur interne du DAO lors du listage", causeSimulee);
-        doThrow(dbExceptionSimulee).when(clientDAO).listerTous();
-
-        // Act & Assert : S'attendre à ce qu'une BusinessException soit lancée.
-        BusinessException thrown = assertThrows(BusinessException.class, () -> {
-            serviceClient.getTousLesClients();
-        }, "Devrait lancer BusinessException");
-
-        assertTrue(thrown.getMessage().contains("Erreur de récupération des clients"), "Le message de BusinessException devrait indiquer une erreur de récupération.");
-        assertNotNull(thrown.getCause(), "BusinessException devrait avoir une cause.");
-        assertSame(dbExceptionSimulee, thrown.getCause(), "La cause de BusinessException devrait être la DatabaseException simulée.");
-        verify(clientDAO, times(1)).listerTous();
+        @Test
+        @DisplayName("Devrait lancer BusinessException si DatabaseException survient lors du listage")
+        void getTousLesClients_ThrowsBusinessException_When_DAOThrowsDatabaseException() throws DatabaseException {
+            // Arrange
+            DatabaseException dbEx = new DatabaseException("Erreur DB listage", new SQLException("Cause SQL"));
+            when(clientDAO.listerTous()).thenThrow(dbEx);
+            // Act & Assert
+            BusinessException thrown = assertThrows(BusinessException.class, () -> {
+                serviceClient.getTousLesClients();
+            });
+            // Le message exact vient de votre ServiceClient.getTousLesClients() : "Erreur de récupération des clients"
+            assertTrue(thrown.getMessage().contains("Erreur de récupération des clients"));
+            assertSame(dbEx, thrown.getCause());
+            verify(clientDAO, times(1)).listerTous();
+        }
     }
 }
